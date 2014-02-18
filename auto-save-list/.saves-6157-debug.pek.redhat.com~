@@ -1,0 +1,6 @@
+/root/rpmbuild/BUILD/samba-3.6.9/source3/lib/util_sock.c
+/root/rpmbuild/BUILD/samba-3.6.9/source3/lib/#util_sock.c#
+/root/rpmbuild/BUILD/samba-3.6.9/source3/smbd/server.c
+/root/rpmbuild/BUILD/samba-3.6.9/source3/smbd/#server.c#
+/root/rpmbuild/BUILD/samba-3.6.9/source3/smbd/test.c
+/root/rpmbuild/BUILD/samba-3.6.9/source3/smbd/#test.c#

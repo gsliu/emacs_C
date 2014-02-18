@@ -1,0 +1,10 @@
+strlimcpy.o: strlimcpy.c ../config.h die.h \
+ /usr/lib/gcc/x86_64-redhat-linux/4.4.5/include/stdarg.h strlimcpy.h
+
+../config.h:
+
+die.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/4.4.5/include/stdarg.h:
+
+strlimcpy.h:

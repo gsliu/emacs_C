@@ -1,0 +1,1150 @@
+(setq x-select-enable-clipboard t)      ; support copy and paste between emacs and X window
+(column-number-mode t)                  ; show column
+(show-paren-mode t)                     ; show parenthese
+(setq show-paren-style 'parenthesis)    ; when sho parenthese, cursor do not jump
+(fset 'yes-or-no-p 'y-or-n-p)           ; use y/n indicate yes/no
+(setq scroll-margin 0 scroll-step 0 scroll-conservatively most-positive-fixnum) ; roll smootly
+(setq next-screen-context-lines 5)  ; let scroll up and scroll down show more context
+(setq require-final-newline t)                     ; add new line on the end of file
+(setq inhibit-startup-message t)                   ; remove emacs start picture
+(setq gnus-inhibit-startup-message t)              ; remove gnu start picture
+(setq enable-recursive-minibuffers t)   ; recursive minibuffer
+(global-auto-revert-mode 1)             ; re-load file if the file is modified by other program
+(delete-selection-mode 1)		; select region can be kill when type <del> or insert character
+(display-time-mode 1)			; display time
+(setq display-time-24hr-format t)	; 24 hours format time
+(setq system-time-locale "C")		; use english time
+(put 'scroll-left 'disabled nil)	; agree scroll left
+(put 'scroll-right 'disabled nil)	; agree scroll right
+;; (setq default-tab-width 4)              ; tab width equal to 4 blank
+(setq frame-title-format "%f")          ; display file name on frame title
+(setq resize-mini-windows t)            ; minibuffer can shrink automatically
+(setq default-truncate-lines nil)         ; fold line default
+(tool-bar-mode -1)                     ; disable tool bar, must be -1, nil will caust toggle
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+(blink-cursor-mode 0)                  ; cursor blinking disable
+(windmove-default-keybindings)          ; use shift + array to move in windows
+(which-function-mode t)                             ; show function name on mode line
+;; (customize-set-variable 'scroll-bar-mode 'right)    ; set scroll bar to right
+;; (put 'scroll-left 'disabled nil)                    ; can scroll left
+;; (put 'scroll-right 'disabled nil)                    ; can scroll right
+(put 'dired-find-alternate-file 'disabled nil)      ; can use 'a' command in dir mode
+(setq-default auto-save-default nil)
+(setq vc-handled-backends nil)                      ; do not use version control, it make emacs slow
+(when window-system
+(server-start)                                      ; run emacsclient, can open a file in emacs
+)
+(setq frame-title-format "%f")                              ; show file path in title bar
+(setq backup-directory-alist '(("." . "~/.emacs.d/.emacsfilebak"))) ; set the default backup file directory
+(setq bookmark-default-file "~/.emacs.d/.emacs.bmk")        ; bookmark default save directory
+
+;; set my custom prefix key <f1>, this key will be used to replace C-xr prefix and 
+;; combine to other frequently used command
+(define-prefix-command 'yp-custom-map1)
+(global-set-key (kbd "<f1>") 'yp-custom-map1)
+(define-prefix-command 'yp-custom-map2)
+(global-set-key (kbd "<f2>") 'yp-custom-map2)
+
+;; emacs default install common lisp package start *******************************************************************
+(require 'hl-line)			; high light current line
+;; (hl-line-mode 1)
+;; or
+;; (global-hl-line-mode 1)
+(global-set-key (kbd "<f1> x") 'hl-line-mode)
+;; (global-set-key (kbd "<f1> x") 'global-hl-line-mode)
+;; defun a light face
+(defface yp-hl-face '((t (:background "#6a7758"))) ; Try also (:underline "Yellow")
+  "Face to use for `hl-line-face'." :group 'hl-line)
+(setq hl-line-face 'yp-hl-face)
+(defun yp-enable-hl-line-mode ()
+  "enable hl-line minor mode everwhere"
+  (interactive)
+  (hl-line-mode 1))
+(add-hook 'gtags-select-mode-hook 'yp-enable-hl-line-mode)
+(add-hook 'ibuffer-mode-hook 'yp-enable-hl-line-mode)
+(add-hook 'bookmark-bmenu-mode-hook 'yp-enable-hl-line-mode)
+(add-hook 'dired-mode-hook 'yp-enable-hl-line-mode)
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+
+;; ibuffer
+(require 'ibuffer)
+(defvar ibuffer-first-flag t
+  "after the first time call it, it set to nil")
+(defun ibuffer-and-sort ()
+  "switch to ibuffer and
+sort by major mode if first time call"
+  (interactive)
+  (ibuffer)
+  (if ibuffer-first-flag
+      (progn
+        (ibuffer-do-sort-by-major-mode)
+        (setq ibuffer-first-flag nil))))
+  
+(global-set-key (kbd "<f11>") 'ibuffer-and-sort)
+
+;; set directory must before load ido, or it only save .ido.last
+;; to that directory, but can not read when start up
+(setq ido-save-directory-list-file "~/.emacs.d/.ido.last")
+(require 'ido)
+(ido-mode t)
+(ido-everywhere 1)
+(setq ido-enable-tramp-completion nil)
+(global-set-key (kbd "<f12>") 'ido-switch-buffer)
+(defun yp-ido-mode-init ()
+  "document"
+  (interactive)
+  (define-key ido-completion-map (kbd "<f12>") 'ido-next-match)
+  (define-key ido-completion-map (kbd "<f11>") 'ido-prev-match))
+(add-hook 'ido-setup-hook 'yp-ido-mode-init)
+
+;; emacs default install common lisp package stop *******************************************************************
+
+;; external lisp common package start ************************************************************************
+(add-to-list 'load-path "~/.emacs.d/elisp")
+
+(require 'buffer-move)
+(global-set-key (kbd "<C-up>")     'buf-move-up)
+(global-set-key (kbd "<C-down>")   'buf-move-down)
+(global-set-key (kbd "<C-left>")   'buf-move-left)
+(global-set-key (kbd "<C-right>")  'buf-move-right)
+
+;; ;; auto pair
+;; (require 'autopair)
+;; (autopair-global-mode)
+;; (require 'auto-pair+)
+;; (setq autopair-blink nil)
+
+;;hide region
+(require 'hide-region)
+(global-set-key (kbd "C-c t") '(lambda () (interactive) (hide-region-hide) (deactivate-mark)))
+(global-set-key (kbd "C-c y") 'hide-region-unhide-below)
+(global-set-key (kbd "M-T") 'hide-region-toggle)
+
+;; hide lines
+;; (require 'hide-lines)
+(autoload 'hide-lines "hide-lines" "Hide lines based on a regexp" t)
+(global-set-key (kbd "C-c g") 'hide-lines)
+(global-set-key (kbd "C-c h") 'show-all-invisible)
+
+;; highlight symbol
+(require 'highlight-symbol)
+(global-set-key (kbd "M-n") 'highlight-symbol-next)
+(global-set-key (kbd "M-p") 'highlight-symbol-prev)
+(global-set-key (kbd "C-c j") 'highlight-symbol-at-point)
+
+(require 'browse-kill-ring)
+(global-set-key (kbd "C-c k") 'browse-kill-ring)
+(browse-kill-ring-default-keybindings)
+
+(require 'undo-tree)
+(global-undo-tree-mode)
+
+(add-to-list 'load-path "~/.emacs.d/elisp/color-theme-6.6.0")
+(require 'color-theme)
+(color-theme-initialize)
+(color-theme-gray30)
+;; (color-theme-blackongray)
+
+;; ultra edit like bookmark
+;; make bookmarks persistent as default, these set must before load bm
+(setq-default bm-buffer-persistence t)
+(setq bm-restore-repository-on-load t)
+(setq bm-repository-file (expand-file-name "~/.emacs.d/.bm-repository"))
+
+(require 'bm)
+(global-set-key (kbd "M-`") 'bm-toggle)
+(global-set-key (kbd "M-#") 'bm-next)
+(global-set-key (kbd "M-$") 'bm-previous)
+
+;; Loading the repository from file when on start up.
+(add-hook' after-init-hook 'bm-repository-load)
+
+;; Restoring nbookmarks when on file find.
+(add-hook 'find-file-hooks 'bm-buffer-restore)
+
+;; Saving bookmark data on killing a buffer
+(add-hook 'kill-buffer-hook 'bm-buffer-save)
+
+;; Saving the repository to file when on exit.
+;; kill-buffer-hook is not called when emacs is killed, so we
+;; must save all bookmarks first.
+(add-hook 'kill-emacs-hook '(lambda nil
+ 		             (bm-buffer-save-all)
+   	             (bm-repository-save)))
+
+;; Update bookmark repository when saving the file.
+(add-hook 'after-save-hook 'bm-buffer-save)
+
+;; Restore bookmarks when buffer is reverted.
+(add-hook 'after-revert-hook 'bm-buffer-restore)
+
+;; make sure bookmarks is saved before check-in (and revert-buffer)
+(add-hook 'vc-before-checkin-hook 'bm-buffer-save)
+
+
+(require 'grep-a-lot)
+(grep-a-lot-setup-keys)  
+
+(when (equal window-system 'x)
+;; configure diaryb
+;; (setq diary-file "~/.emacs.d/diary")
+;; (appt-activate 1)
+;; (setq appt-display-format 'window)
+)  ;;when (equal window-system 'x)
+
+(autoload 'gtags-mode "gtags" "" t)
+
+(defun yp-gtags-append ()
+  (interactive)
+  (if gtags-mode
+      (progn
+        (message "start to global -u")
+        (start-process "yp-gtags-append" "*scratch*" "global" "-u"))))
+
+(defun yp-gtags-mode-init ()
+  (gtags-mode 1)
+  ;; (define-prefix-command 'yp-gtags-map)
+  ;; (global-set-key (kbd "<f2>") 'yp-gtags-map)
+  (define-key gtags-mode-map (kbd "<f2> v") 'gtags-visit-rootdir)
+  (define-key gtags-mode-map (kbd "<f2> t") 'gtags-find-tag)
+  (define-key gtags-mode-map (kbd "<f2> o") 'gtags-find-tag-other-window)
+  (define-key gtags-mode-map (kbd "<f2> r") 'gtags-find-rtag)
+  (define-key gtags-mode-map (kbd "<f2> s") 'gtags-find-symbol)
+  (define-key gtags-mode-map (kbd "<f2> p") 'gtags-find-pattern)
+  (define-key gtags-mode-map (kbd "<f2> g") 'gtags-find-with-grep)
+  (define-key gtags-mode-map (kbd "<f2> i") 'gtags-find-with-idutils)
+  (define-key gtags-mode-map (kbd "<f2> f") 'gtags-find-file)
+  (define-key gtags-mode-map (kbd "<f2> a") 'gtags-parse-file)
+  (define-key gtags-mode-map (kbd "<f2> b") 'yp-gtags-append)
+  (define-key gtags-mode-map (kbd "M-.") 'gtags-find-tag-from-here))
+
+(add-hook 'c-mode-hook 'yp-gtags-mode-init)
+
+(add-hook 'c++-mode-hook 'yp-gtags-mode-init)
+
+(add-hook 'asm-mode-hook 'yp-gtags-mode-init)
+
+(add-hook 'java-mode-hook 'yp-gtags-mode-init)
+
+(when window-system
+;; Load CEDET
+(load-file "~/.emacs.d/elisp/cedet/common/cedet.el")
+
+;; Enable EDE (Project Management) features
+(global-ede-mode 1)
+
+;; Enabling various SEMANTIC minor modes.  See semantic/INSTALL for more ideas.
+;; Select one of the following:
+
+;; * This enables the database and idle reparse engines
+(semantic-load-enable-minimum-features)
+
+(setq ede-locate-setup-options
+      '(ede-locate-global
+        ede-locate-base))
+
+(setq semanticdb-default-save-directory (expand-file-name "~/.emacs.d/.semanticdb"))  ;;let semantic put all cache file to one directory
+
+(global-set-key (kbd "M-j") 'semantic-complete-analyze-inline-idle)
+;; (setq semanticdb-find-default-throttle '(local project unloaded system recursive omniscience))
+(defun yp-semantic-jump (p1)
+  "use gtags stack store jump information"
+  (interactive"d")
+  (if gtags-mode
+      (progn
+        (let* ((bak-buf (current-buffer))
+               (bak-point (point)))
+          (gtags-push-context)
+          (semantic-ia-fast-jump p1)
+          (if (and (equal bak-buf (current-buffer)) (equal bak-point (point)))
+              (progn
+                (setq gtags-buffer-stack (cdr gtags-buffer-stack))
+                (setq gtags-point-stack (cdr gtags-point-stack)))
+            (setq gtags-current-buffer (current-buffer)))))
+    (semantic-ia-fast-jump p1)))
+
+(global-set-key (kbd "M-l") 'yp-semantic-jump)
+
+(setq semantic-c-obey-conditional-section-parsing-flag nil) ; ignore #ifdef
+(setq-default auto-save-default nil)    ; disable auto save mode, maybe it can jam emacs
+(setq auto-save-hook nil)               ; clean the auto save hook, maybe we can find a better method
+
+;; let cedet call ctags to find things which cedet can not find
+(semantic-load-enable-all-exuberent-ctags-support)
+
+(when (equal window-system 'x)
+;; ede project
+(load-file "~/.emacs.d/project.el")
+(defvar yp-ede-file "~/.emacs.d/project.el")
+(defvar yp-ede-tmp "ede-tmp")
+(defvar yp-ede-path nil)
+(defvar yp-proj-name nil)
+
+(defun yp-ede-create ()
+  "create ede-cpp-root-project base on GTAGS"
+  (interactive)
+  (call-process "global" nil yp-ede-tmp nil "-p")
+  (save-current-buffer
+    (set-buffer yp-ede-tmp)
+    (setq yp-ede-path (buffer-string)))
+  (kill-buffer yp-ede-tmp)
+  (if (string-equal (substring yp-ede-path 0 1) "g")
+      (message "%s" (substring yp-ede-path 0 -1))
+    (setq yp-proj-name (read-from-minibuffer "project name:"))
+    (setq yp-ede-path (format "%s/GTAGS" (substring yp-ede-path 0 -1)))
+    (save-current-buffer
+      (let (buffer)
+	(setq buffer (find-file yp-ede-file))
+	(goto-char (point-max))
+	(insert (format "\n(if (file-exists-p \"%s\")\n    " yp-ede-path))
+	(insert (format "(ede-cpp-root-project \"%s\" :file\"%s\"))\n" yp-proj-name yp-ede-path))
+	(save-buffer buffer)
+	(call-interactively 'eval-last-sexp)
+	(kill-buffer buffer)
+    ))))
+(global-set-key (kbd "<f2> e") 'yp-ede-create)
+)  ;;when (equal window-system 'x)
+)  ;; end of when window-system
+
+;; external lisp common package stop ************************************************************************
+
+;; my custom common macro and function start ************************************************************************
+;; M-n C-x e  run the nth macro form current define
+;; M-x name-last-kbd-macro  name the current macro (for save)
+;; M-x load-file load macro
+
+;; yp-exchange-down/up assume "<f1> TAB" is "indent-according-to-mode"
+;; and "M-m" is "back-to-indentation"
+(global-set-key (kbd "<f1> TAB") 'indent-according-to-mode)
+
+(fset 'yp-exchange-down
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([14 24 20 16 16 f1 tab 14 f1 tab] 0 "%d")) arg)))
+
+(fset 'yp-exchange-up
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([24 20 16 16 f1 tab 14 f1 tab 16 134217837] 0 "%d")) arg)))
+
+(fset 'yp-scroll-left
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("2<" 0 "%d")) arg)))
+
+(fset 'yp-scroll-right
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("2>" 0 "%d")) arg)))
+
+(fset 'yp-inlarge-h-window
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("^" 0 "%d")) arg)))
+
+(fset 'yp-inlarge-y-window
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("}" 0 "%d")) arg)))
+
+(fset 'yp-calculator
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("*c" 0 "%d")) arg)))
+
+(fset 'yp-scroll-another-window-to-bottom
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("o\276o" 0 "%d")) arg)))
+
+(fset 'yp-select-bracket
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("\225 \216" 0 "%d")) arg)))
+
+(fset 'yp-set-mark
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote (" " 0 "%d")) arg)))
+
+(defun ywb-create/switch-scratch ()
+  (interactive)
+  (let ((buf (get-buffer "*scratch*")))
+    (switch-to-buffer (get-buffer-create "*scratch*"))
+    (when (null buf)
+      (lisp-interaction-mode))))
+
+(defun yp-goto-next-line ()
+  "document"
+  (interactive)
+  (end-of-line)
+  (newline-and-indent))
+
+(defun yp-goto-prev-line ()
+  "document"
+  (interactive)
+  (beginning-of-line)
+  (newline-and-indent)
+  (beginning-of-line 0)
+  (indent-according-to-mode))
+
+(defun yp-save-and-eixt ()
+  (interactive)
+  (save-buffer (current-buffer))
+  (if window-system
+      (progn
+        (server-edit)
+        (suspend-frame))
+    (save-buffers-kill-terminal)))
+
+(defun yp-scroll-up ()
+  (interactive)
+  (scroll-up 2))
+
+(defun yp-scroll-down ()
+  (interactive)
+  (scroll-down 2))
+
+
+(defun yp-delete-pair ()
+  "let point before the pair,
+this function will delete the pair,
+or do nothing"
+  (interactive)
+  (let (p1)
+  (backward-char 1)
+  (cond
+   ((looking-at "\\s\(")
+    (setq p1 (point))
+    (forward-list 1)
+    (backward-char 1)
+    (delete-char 1)
+    (goto-char p1)
+    (delete-char 1))
+   ((looking-at "\\s\)")
+    (setq p1 (point))
+    (forward-char 1)
+    (backward-list 1)
+    (delete-char 1)
+    (goto-char (- p1 1))
+    (delete-char 1))
+   (t (forward-char 1) (message "no pair find")))))
+
+(global-set-key (kbd "<f1> d") 'delete-rectangle)
+(global-set-key (kbd "<f1> t") 'string-rectangle)
+(global-set-key (kbd "<f1> k") 'kill-rectangle)
+(global-set-key (kbd "<f1> y") 'yank-rectangle)
+(global-set-key (kbd "<f1> c") 'clear-rectangle)
+(global-set-key (kbd "<f1> s") 'copy-to-register)
+(global-set-key (kbd "<f1> r") 'copy-rectangle-to-register)
+(global-set-key (kbd "<f1> i") 'insert-register)
+(global-set-key (kbd "<f1> m") 'bookmark-set)
+(global-set-key (kbd "<f1> b") 'bookmark-jump)
+(global-set-key (kbd "<f1> l") 'bookmark-bmenu-list)
+(global-set-key (kbd "<f1> f") 'frame-configuration-to-register)
+(global-set-key (kbd "<f1> j") 'jump-to-register)
+(global-set-key (kbd "<f1> n") 'number-to-register)
+(global-set-key (kbd "<f1> o") 'open-rectangle)
+(global-set-key (kbd "<f1> w") 'window-configuration-to-register)
+(global-set-key (kbd "<f1> <SPC>") 'point-to-register)
+(global-set-key (kbd "<f1> +") 'increment-register)
+(global-set-key (kbd "<f1> <f1>") 'yp-scroll-another-window-to-bottom)
+(global-set-key (kbd "M-i") 'yp-goto-next-line)
+(global-set-key (kbd "M-u") 'yp-goto-prev-line)
+(global-set-key (kbd "S-<SPC>") 'yp-set-mark)
+(global-set-key (kbd "C-c s") 'yp-save-and-eixt)
+(global-set-key (kbd "M-c") 'pop-to-mark-command)
+(global-set-key (kbd "M-(") 'beginning-of-defun)
+(global-set-key (kbd "M-&") '(lambda() (interactive) (beginning-of-defun -1)))
+(global-set-key (kbd "M-)") 'end-of-defun)
+(global-set-key (kbd "M-N") 'yp-scroll-up)
+(global-set-key (kbd "M-P") 'yp-scroll-down)
+(global-set-key (kbd "<f7>") 'yp-scroll-up)
+(global-set-key (kbd "<f8>") 'yp-scroll-down)
+(global-set-key (kbd "M-L") 'yp-scroll-left)
+(global-set-key (kbd "M-H") 'yp-scroll-right)
+(global-set-key (kbd "M-J") 'yp-inlarge-h-window)
+(global-set-key (kbd "M-K") 'yp-inlarge-y-window)
+(global-set-key (kbd "C-x C-k i") 'insert-kbd-macro)
+(global-set-key (kbd "M-U") 'yp-exchange-up)
+(global-set-key (kbd "M-I") 'yp-exchange-down)
+(global-set-key (kbd "M-C-y") 'yp-select-bracket)
+(global-set-key (kbd "<f1> z") 'toggle-truncate-lines)
+(global-set-key (kbd "<f1> a") 'linum-mode);;line number
+(global-set-key (kbd "<f1> v") 'view-mode)
+(global-set-key (kbd "C-h o") 'ywb-create/switch-scratch) ; compare to C-h e -> Message buffer
+(global-set-key (kbd "C-c f") 'ffap)
+(global-set-key (kbd "<RET>") 'newline-and-indent)
+(global-set-key (kbd "C-j") 'newline)
+(global-set-key (kbd "S-<backspace>") 'yp-delete-pair)
+
+(global-set-key (kbd "<f1> `") 'revert-buffer)
+(global-set-key (kbd "<f1> 1") 'color-theme-select)
+
+(defun yp-copy (&optional arg)
+  "switch action by whether mark is active"
+  (interactive "P")
+  (if mark-active
+      (kill-ring-save (region-beginning) (region-end))
+    (let ((beg (progn (back-to-indentation) (point))) 
+          (end (line-end-position arg)))
+      (copy-region-as-kill beg end))))
+
+(defun yp-kill (&optional arg)
+  "switch action by whether mark is active"
+  (interactive "P")
+  (if mark-active
+      (kill-region (region-beginning) (region-end))
+    (kill-whole-line arg)))
+
+
+(defun yp-mark-line (&optional arg)
+  (interactive "P")
+  (if (region-active-p)
+      (progn
+        (goto-char (line-end-position 2)))
+    (progn
+      (back-to-indentation)
+      (set-mark (point))
+      (goto-char (line-end-position))))
+  (setq arg (if arg (prefix-numeric-value arg)
+              (if (< (mark) (point)) -1 1)))
+  (if (and arg (> arg 1))
+      (progn
+        (goto-char (line-end-position arg)))))
+
+(global-set-key (kbd "M-w") 'yp-copy)
+(global-set-key (kbd "C-w") 'yp-kill)
+(global-set-key (kbd "C-z") 'yp-mark-line)
+
+(defun ywb-hippie-expand-filename ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list
+         '(try-complete-file-name try-complete-file-name-partially)))
+    (call-interactively 'hippie-expand)))
+(global-set-key (kbd "M-+") 'ywb-hippie-expand-filename)
+
+(defun yp-hippie-expand-line ()
+  (interactive)
+  (let ((hippie-expand-try-functions-list
+         '(try-expand-line try-expand-line-all-buffers)))
+    (call-interactively 'hippie-expand)))
+(global-set-key (kbd "M-,") 'yp-hippie-expand-line)
+
+(defun wy-go-to-char (n char)
+  "Move forward to Nth occurence of CHAR.
+Typing `wy-go-to-char-key' again will move forwad to the next Nth
+occurence of CHAR."
+  (interactive "p\ncGo to char:")
+  (search-forward (string char) nil nil n)
+  (while (char-equal (read-char)
+                     char)
+    (search-forward (string char) nil nil n))
+  (setq unread-command-events (list last-input-event)))
+(global-set-key (kbd "<f9>") 'wy-go-to-char)
+
+(defun yp-insert-time ()
+  (interactive)
+  (insert "(")
+  (insert (format-time-string "%Y/%m/%d %H:%M:%S" (current-time)))
+  (insert ")"))
+(global-set-key (kbd "C-c z") 'yp-insert-time)
+
+(global-set-key (kbd "C-x k") 'kill-this-buffer) ;don't ask select question when kill buffer
+;; (global-set-key (kbd "<f5>") 'kill-this-buffer)
+
+(setq-default case-fold-search t)
+(defun yp-case-sensitive-toggle ()
+  (interactive)
+  (if case-fold-search
+    (progn
+      (setq-default case-fold-search nil)
+      (message "case sensitive TRUE"))
+    (progn
+      (setq-default case-fold-search t)
+      (message "case sensitive FALSE"))))
+
+(defvar yp-occur-flag)
+(defun yp-occur-read-primary-args ()
+  (let ((arg nil))
+    (if mark-active
+        (setq arg (buffer-substring (region-beginning) (region-end)))
+      (setq arg (current-word)))
+    (setq yp-occur-flag t)
+    (unless arg
+      (setq yp-occur-flag nil)
+      (setq arg (car regexp-history)))
+    (list (yp-read-regexp "List lines matching regexp"
+                        arg)
+          (when current-prefix-arg
+            (prefix-numeric-value current-prefix-arg)))))
+
+(defun yp-read-regexp (prompt &optional default-value)
+  "Read regexp as a string using the regexp history and some useful defaults.
+Prompt for a regular expression with PROMPT (without a colon and
+space) in the minibuffer.  The optional argument DEFAULT-VALUE
+provides the value to display in the minibuffer prompt that is
+returned if the user just types RET.
+Values available via M-n are the string at point, the last isearch
+regexp, the last isearch string, and the last replacement regexp."
+  (let* ((defaults
+	   (list (regexp-quote
+		  (or (funcall (or find-tag-default-function
+				   (get major-mode 'find-tag-default-function)
+				   'find-tag-default))
+		      ""))
+		 (car regexp-search-ring)
+		 (regexp-quote (or (car search-ring) ""))
+		 (car (symbol-value
+		       query-replace-from-history-variable))))
+	 (defaults (delete-dups (delq nil (delete "" defaults))))
+	 ;; Don't add automatically the car of defaults for empty input
+	 (history-add-new-input nil)
+	 (input
+	  (read-from-minibuffer
+	   (if default-value
+	       (format "%s (default %s): " prompt
+		       (query-replace-descr default-value))
+	     (format "%s: " prompt))
+	   nil nil nil 'regexp-history defaults t)))
+    (if (equal input "")
+        (progn
+          (if yp-occur-flag
+              (add-to-history 'regexp-history default-value))
+        default-value)
+      (prog1 input
+        (add-to-history 'regexp-history input)))))
+
+(defun yp-occur (regexp &optional nlines)
+  "Show all lines in the current buffer containing a match for REGEXP.
+This function can not handle matches that span more than one line.
+
+Each line is displayed with NLINES lines before and after, or -NLINES
+before if NLINES is negative.
+NLINES defaults to `list-matching-lines-default-context-lines'.
+Interactively it is the prefix arg.
+
+The lines are shown in a buffer named `*Occur*'.
+It serves as a menu to find any of the occurrences in this buffer.
+\\<occur-mode-map>\\[describe-mode] in that buffer will explain how.
+
+If REGEXP contains upper case characters (excluding those preceded by `\\')
+and `search-upper-case' is non-nil, the matching is case-sensitive."
+  (interactive (yp-occur-read-primary-args))
+  (occur-1 regexp nlines (list (current-buffer))))
+
+(global-set-key (kbd "M-s j") 'yp-case-sensitive-toggle)
+(global-set-key (kbd "M-s r") 'rgrep)
+(global-set-key (kbd "M-s l") 'lgrep)
+(global-set-key (kbd "M-s m") 'multi-occur)
+(global-set-key (kbd "M-s o") 'yp-occur)
+
+;; don't let emacs ask any question when kill buffer or kill session
+(remove-hook 'kill-buffer-query-functions 'server-kill-buffer-query-function)
+(remove-hook 'kill-emacs-query-functions 'server-kill-emacs-query-function)
+
+(defvar yp-frame-alist nil)
+(defun yp-frame-top ()
+  (interactive)
+  (setq yp-frame-alist '((height . 10) (width . 110)))
+  (make-frame yp-frame-alist))
+
+(defun yp-frame-corner ()
+  (interactive)
+  (setq yp-frame-alist '((height . 20) (width . 35)))
+  (make-frame yp-frame-alist))
+
+(global-set-key (kbd "<f1> [") 'yp-frame-top)
+(global-set-key (kbd "<f1> ]") 'yp-frame-corner)
+
+
+(defvar yp-sd-buffer-back nil
+  "store current buffer, for go back when out *star-dict* buffer")
+(defvar yp-sd-point-back nil
+  "store current point, for go back when out *star-dict* buffer")
+
+(defun yp-star-dict-go-back ()
+  "go back to the buffer where start the star-dict"
+  (interactive)
+  (define-key view-mode-map (kbd "q") 'View-quit)
+  (if (not (equal (buffer-name) "*star-dict*"))
+      (View-quit)
+    (kill-this-buffer)
+    (switch-to-buffer yp-sd-buffer-back)
+    (goto-char yp-sd-point-back)))
+
+(defun yp-star-dict-insert-buf (str)
+  "receive a string, insert it to a special
+buffer, used for star-dict"
+  (if (not (equal (buffer-name) "*star-dict*"))
+      (progn
+        (setq yp-sd-buffer-back (current-buffer))
+        (setq yp-sd-point-back (point))))
+  (get-buffer-create "*star-dict*")
+  (set-buffer "*star-dict*")
+  (toggle-read-only -1)
+  (erase-buffer)
+  (insert str)
+  (view-mode)
+  (define-key view-mode-map (kbd "q") 'yp-star-dict-go-back)
+  (switch-to-buffer "*star-dict*")
+  (goto-char 0))
+
+;; call stardict command line interface "sdcv" to look up dictionary
+;; if select a region, then look up the content of the region
+;; or look up current word on the point
+(defun kid-star-dict ()
+  "Serch dict in stardict."
+  (interactive)
+  (let ((begin (point-min))
+        (end (point-max)))
+    (if mark-active
+        (setq begin (region-beginning)
+              end (region-end))
+      (save-excursion
+        ;; modify by yupeng, or it will goto pre-word if point at the head of a word
+        ;;(backward-word)
+        (skip-chars-backward "a-zA-Z")
+        (mark-word)
+        (setq begin (region-beginning)
+              end (region-end))))
+    ;; sometimes stardict will very slow, so show something on the echo region
+    ;; to avoid the user think emacs is hung up
+    (message "searching for %s ..." (buffer-substring begin end))
+    (yp-star-dict-insert-buf
+     (shell-command-to-string
+      (concat "sdcv -n "
+              (buffer-substring begin end))))))
+
+(defun yp-star-dict-word (str)
+  (interactive "sInput a word:")
+  (yp-star-dict-insert-buf
+   (shell-command-to-string
+    (concat "sdcv -n " str))))
+
+(global-set-key (kbd "C-c b") 'kid-star-dict)
+(global-set-key (kbd "C-c n") 'yp-star-dict-word)
+;; my custom common macro and function stop ************************************************************************
+
+;; mode correlation setting start ************************************************************************
+;; load up modes I use, for msf-abbrev and key banding
+;; c-mode/c++mode/awk mode, contains in cc-mode, sh-mode, contains in sh-script, asm-mode contains in asm-mode
+;; emacs-lisp-mode-map and lisp-interaction-mode-map enabled default
+(require 'cc-mode)
+(require 'sh-script)
+(require 'asm-mode)
+
+;; yasnippet
+(add-to-list 'load-path "~/.emacs.d/elisp/yasnippet")
+(require 'yasnippet)
+ ;; not yasnippet-bundle
+(yas/initialize)
+(yas/load-directory "~/.emacs.d/elisp/yasnippet/snippets")
+
+(defvar yp-yas-region-flag nil
+  "if need to insert string when yas expand,
+this variable will be set to t")
+
+(defvar yp-yas-store-region nil
+  "a temp variable, store the region string, for
+instert them when yas expand")
+
+(defun yp-yas-insert ()
+  "check yp-yas-region-flag, if nil, insert a '\n',
+or insert the sotred region string"
+  (if yp-yas-region-flag
+      (insert yp-yas-store-region)
+    (insert "\n")))
+
+(defun yp-yas-expand ()
+  "if mark active, remove blank space from
+the region end, and move point to the point
+where may can expand to yasnittet"
+  (interactive)
+  (if mark-active
+      (progn
+        (if (< (region-beginning) (point))
+            nil
+          (exchange-point-and-mark)
+          (re-search-backward "[[:graph:]]")
+          (forward-char 1))
+        (setq yp-yas-store-region (filter-buffer-substring (region-beginning) (region-end) t t))
+        (setq yp-yas-region-flag t))
+    (setq yp-yas-region-flag nil))
+  (call-interactively 'yas/expand))
+
+(defun yp-yas/minor-mode-init ()
+  (define-key yas/minor-mode-map (kbd "TAB") 'yp-yas-expand))
+(add-hook 'yas/minor-mode-hook 'yp-yas/minor-mode-init t)
+
+(defconst yp-c-style
+  '((c-tab-always-indent        . t)
+    (c-comment-only-line-offset . 4)
+    (c-hanging-braces-alist     . ((substatement-open after)
+                                   (brace-list-open)))
+    (c-hanging-colons-alist     . ((member-init-intro before)
+                                   (inher-intro)
+                                   (case-label after)
+                                   (label after)
+                                   (access-label after)))
+    (c-cleanup-list             . (scope-operator
+                                   empty-defun-braces
+                                   defun-close-semi))
+    (c-offsets-alist            . ((arglist-close . c-lineup-arglist)
+                                   (substatement-open . 0)
+                                   (case-label        . 4)
+                                   (block-open        . 0)
+                                   (knr-argdecl-intro . -)
+                                   (label             . 0)
+                                   (comment-intro     . 0)
+                                   ))
+    (c-echo-syntactic-information-p . nil))
+  "yupeng C Programming Style")
+(c-add-style "yp-c-style" yp-c-style)
+
+(defun c-lineup-arglist-tabs-only (ignored)
+  "Line up argument lists by tabs, not spaces"
+  (let* ((anchor (c-langelem-pos c-syntactic-element))
+	 (column (c-langelem-2nd-pos c-syntactic-element))
+	 (offset (- (1+ column) anchor))
+	 (steps (floor offset c-basic-offset)))
+    (* (max steps 1)
+       c-basic-offset)))
+
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            ;; Add kernel style
+            (c-add-style
+             "linux-tabs-only"
+             '("linux" (c-offsets-alist
+                        (arglist-cont-nonempty
+                         c-lineup-gcc-asm-reg
+                         c-lineup-arglist-tabs-only)
+			(label             . [0]))))))
+
+(add-hook 'c-mode-hook
+          (lambda ()
+            (let ((filename (buffer-file-name)))
+              ;; Enable kernel mode for the appropriate files
+                (setq indent-tabs-mode t)
+                (c-set-style "linux-tabs-only"))))
+
+
+;; (setq c-default-style '((java-mode . "java")
+;;                         (awk-mode . "awk")
+;;                         (other . "yp-c-style")))
+;; M-x c-set-style can see the different style, reference to CC mode
+
+;; (setq c-basic-offset 4)			; it should be set after c-default-style
+;; (setq-default indent-tabs-mode nil)	; use blank replace tab
+;; (setq c-label-minimum-indentation 0)
+(setq c-electric-pound-behavior '(alignleft))
+(setq compilation-scroll-output t)
+
+;; code fold
+(add-hook 'c-mode-common-hook   'hs-minor-mode)
+(add-hook 'emacs-lisp-mode-hook 'hs-minor-mode)
+(add-hook 'java-mode-hook       'hs-minor-mode)
+(add-hook 'lisp-mode-hook       'hs-minor-mode)
+(add-hook 'perl-mode-hook       'hs-minor-mode)
+(add-hook 'sh-mode-hook         'hs-minor-mode)
+
+(global-set-key (kbd "<f1> C-h") 'hs-hide-block)
+(global-set-key (kbd "<f1> C-s") 'hs-show-block)
+(global-set-key (kbd "<f1> C-M-h") 'hs-hide-all)
+(global-set-key (kbd "<f1> C-M-s") 'hs-show-all)
+(global-set-key (kbd "<f1> C-l") 'hs-hide-level)
+(global-set-key (kbd "<f1> C-c") 'hs-toggle-hiding)
+
+
+(hide-ifdef-mode 1)
+;;; for hideif
+(defun yp-hif-toggle-block ()
+  "toggle hide/show-ifdef-block --lgfang"
+  (interactive)
+  (require 'hideif)
+  (let* ((top-bottom (hif-find-ifdef-block))
+         (top (car top-bottom)))
+    (push-mark)
+    (goto-char top)
+    (hif-end-of-line)
+    (setq top (point))
+    (if (hif-overlay-at top)
+        (show-ifdef-block)
+      (hide-ifdef-block))))
+
+(defun hif-overlay-at (position)
+  "An imitation of the one in hide-show --lgfang"
+  (let ((overlays (overlays-at position))
+        ov found)
+    (while (and (not found) (setq ov (car overlays)))
+      (setq found (eq (overlay-get ov 'invisible) 'hide-ifdef)
+            overlays (cdr overlays)))
+    found))
+(global-set-key (kbd "<f1> C-q") 'yp-hif-toggle-block)
+
+;; Highlight operators
+(setq yp-font-lock-keyword
+      '(("\\_<\\.\\_>" . font-lock-warning-face)
+        ("\\_<\\+\\_>" . font-lock-warning-face) 
+        ("\\_<\\-\\_>" . font-lock-warning-face)
+        ("\\_<\\=\\_>" . font-lock-warning-face)
+        ("\\_<:\\_>" . font-lock-warning-face)
+        ("\\[" . font-lock-warning-face)
+        ("\\]" . font-lock-warning-face)
+        ("\\_<,\\_>" . font-lock-warning-face)
+        ("\\_<!\\_>" . font-lock-warning-face)
+        ("(" . font-lock-warning-face)
+        (")" . font-lock-warning-face)
+        ("\\_<\<\\_>" . font-lock-warning-face)
+        ("\\_<\>\\_>" . font-lock-warning-face)
+        ))
+
+(font-lock-add-keywords 'c-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'asm-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'c++-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'sh-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'awk-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'emacs-lisp-mode yp-font-lock-keyword)
+(font-lock-add-keywords 'lisp-interaction-mode-map yp-font-lock-keyword)
+
+(defun yp-mark-symbol (arg)
+  (interactive "P")
+  (unless arg
+    (setq arg 1))
+  ;; (forward-symbol -1)  ;; it will find the eariler symbol if the point at the first character of a symbol
+  (skip-syntax-backward "_w")
+  (set-mark (point))
+  (forward-symbol arg))
+
+
+(fset 'yp-insert-func
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([5 tab return 17 123 tab return return 125 16 tab] 0 "%d")) arg)))
+
+(fset 'yp-goto-line-end
+   (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ([5 59 tab] 0 "%d")) arg)))
+
+(global-set-key (kbd "M-o") 'yp-mark-symbol)
+(define-key c-mode-map (kbd "M-q") 'yp-insert-func)
+(define-key c-mode-map (kbd "C-;") 'yp-goto-line-end)
+(define-key c-mode-map (kbd "<RET>") 'c-context-line-break)
+(define-key c++-mode-map (kbd "M-q") 'yp-insert-func)
+(define-key c++-mode-map (kbd "M-j") 'yp-goto-line-end)
+
+(defun yp-backward-up-list ()
+  "push mark, then call backward-up-list,
+mainly for cpp name space"
+  (interactive)
+  (push-mark)
+  (call-interactively 'backward-up-list))
+(global-set-key (kbd "C-M-u") 'yp-backward-up-list)
+
+;; add:
+;; (if (> lim (point-max))
+;;     (setq lim (point-max)))
+;; before
+;; (c-clear-char-properties (point) lim 'syntax-table)
+;; or awk mode will have problem
+(defun yp-awk-mode-init ()
+  (defun c-awk-set-syntax-table-properties (lim)
+    ;;     Scan the buffer text between point and LIM, setting (and clearing) the
+    ;; syntax-table property where necessary.
+    ;;
+    ;; This function is designed to be called as the FUNCTION in a MATCHER in
+    ;; font-lock-syntactic-keywords, and it always returns NIL (to inhibit
+    ;; repeated calls from font-lock: See elisp info page "Search-based
+    ;; Fontification").  It also gets called, with a bit of glue, from
+    ;; after-change-functions when font-lock isn't active.  Point is left
+    ;; "undefined" after this function exits.  THE BUFFER SHOULD HAVE BEEN
+    ;; WIDENED, AND ANY PRECIOUS MATCH-DATA SAVED BEFORE CALLING THIS ROUTINE.
+    ;;
+    ;; We need to set/clear the syntax-table property on:
+    ;; (i) / - It is set to "string" on a / which is the opening or closing
+    ;;     delimiter of the properly terminated regexp (and left unset on a
+    ;;     division sign).
+    ;; (ii) the opener of an unterminated string/regexp, we set the property
+    ;;    "generic string delimiter" on both the opening " or / and the end of the
+    ;;    line where the closing delimiter is missing.
+    ;; (iii) "s inside strings/regexps (these will all be escaped "s).  They are
+    ;;   given the property "punctuation".  This will later allow other routines
+    ;;   to use the regexp "\\S\"*" to skip over the string innards.
+    ;; (iv) Inside a comment, all syntax-table properties are cleared.
+    ;;
+    ;; This function does hidden buffer changes.
+  (let (anchor
+	(anchor-state-/div nil)) ; t means a following / would be a div sign.
+    (c-awk-beginning-of-logical-line) ; ACM 2002/7/21.  This is probably redundant.
+    (if (> lim (point-max))
+        (setq lim (point-max)))
+    (c-clear-char-properties (point) lim 'syntax-table)
+    ;; Once round the next loop for each string, regexp, or div sign
+    (while (progn
+             ;; Skip any "harmless" lines before the next tricky one.
+             (if (search-forward-regexp c-awk-harmless-lines+-here-re nil t)
+                 (setq anchor-state-/div nil))
+             (< (point) lim))
+      (setq anchor (point))
+      (search-forward-regexp c-awk-harmless-string*-here-re nil t)
+      ;; We are now looking at either a " or a /.
+      ;; Do our thing on the string, regexp or divsion sign.
+      (setq anchor-state-/div
+            (if (looking-at "_?\"")
+                (c-awk-syntax-tablify-string)
+              (c-awk-syntax-tablify-/ anchor anchor-state-/div))))
+    nil))
+  )
+(add-hook 'awk-mode-hook 'yp-awk-mode-init)
+
+(add-to-list 'auto-mode-alist '("\\.rc$" . sh-mode))
+
+(require 'autoinsert)
+(auto-insert-mode)  ;;; Adds hook to find-files-hook
+(setq auto-insert-query nil) ;;; If you don't want to be prompted before insertion
+
+(defun yp-shell-insert ()
+  (interactive)
+  (executable-set-magic "/bin/bash\n")
+  (goto-char (point-max)))
+
+(defun yp-awk-insert ()
+  (interactive)
+  (executable-set-magic "/usr/bin/awk -f\n")
+  (goto-char (point-max)))
+
+(defun yp-python-insert ()
+  (interactive)
+  (executable-set-magic "/usr/bin/env python\n")
+  (goto-char (point-max)))
+
+(define-auto-insert "\\.sh$" 'yp-shell-insert)
+(define-auto-insert "\\.awk$" 'yp-awk-insert)
+(define-auto-insert "\\.py$" 'yp-python-insert)
+
+(global-set-key (kbd "C-c `") 'pwd)
+(global-set-key (kbd "C-c 1") 'emacs-lisp-byte-compile)
+
+(defun yp-ediff-mode-init ()
+  (setq ediff-split-window-function 'split-window-horizontally))
+(add-hook 'ediff-load-hook 'yp-ediff-mode-init)
+(global-set-key (kbd "C-c 2") 'ediff-buffers)
+
+(global-set-key (kbd "C-c 3") 'hexl-mode);into hexl mode
+(defun yp-hexl-mode-init ()
+  (define-key hexl-mode-map (kbd "M-i") 'hexl-insert-hex-string))
+(add-hook 'hexl-mode-hook 'yp-hexl-mode-init)
+
+(global-set-key (kbd "C-c 4") 'yp-calculator)
+(setq calc-settings-file "~/.emacs.d/.calc.el") ; file store calculator define
+
+(global-set-key (kbd "C-c 5") 'calendar)
+
+;; config org mode
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(add-hook 'org-mode-hook 'turn-on-font-lock)  ; must enable it, or plain list can nor work correct
+(setq org-todo-keywords
+      '((sequence "TODO(t)" "DOING(i!)" "PENDING(p!)" "|" "DONE(d!)" "CANCEL(c!)"))) ; add DOING and CANCEL state in todo function
+(define-key global-map "\C-cl" 'org-store-link)
+(define-key global-map "\C-ca" 'org-agenda)
+
+(org-remember-insinuate)
+(org-remember-apply-template)
+(setq org-remember-templates
+      '(("rh_work" ?r "* TODO %?\n  %i\n  %a" "~/work/org/rh_work.org")
+        ("todo_list" ?t "* %U %?\n\n  %i\n  %a" "~/work/org/todo_list.org")
+	("system" ?s "* %U %?\n\n  %i\n  %a" "~/work/org/system.org")
+        ("stuff" ?u "* %^{Title}\n  %i\n  %a" "~/work/org/stuff.org")))
+(define-key global-map "\C-cr" 'org-remember)
+
+(add-to-list 'auto-mode-alist '("\\.dra\\'" . text-mode)) ; my draft file
+(add-to-list 'auto-mode-alist '(".*config$" . conf-mode))
+
+(autoload 'systemtap-mode "systemtap-mode")
+(add-to-list 'auto-mode-alist '("\\.stp$" . systemtap-mode))
+
+(defvar kconfig-mode-font-lock-keywords
+  '(("^[\t, ]*\\_<bool\\_>" . font-lock-type-face)
+    ("^[\t, ]*\\_<int\\_>" . font-lock-type-face)
+    ("^[\t, ]*\\_<boolean\\_>" . font-lock-type-face)
+    ("^[\t, ]*\\_<tristate\\_>" . font-lock-type-face)
+    ("^[\t, ]*\\_<depends on\\_>" . font-lock-variable-name-face)
+    ("^[\t, ]*\\_<select\\_>" . font-lock-variable-name-face)
+    ("^[\t, ]*\\_<help\\_>" . font-lock-variable-name-face)
+    ("^[\t, ]*\\_<---help---\\_>" . font-lock-variable-name-face)
+    ("^[\t, ]*\\_<default\\_>" . font-lock-variable-name-face)
+    ("^[\t, ]*\\_<range\\_>" . font-lock-variable-name-face)
+    ("^\\_<config\\_>" . font-lock-constant-face)
+    ("^\\_<comment\\_>" . font-lock-constant-face)
+    ("^\\_<menu\\_>" . font-lock-constant-face)
+    ("^\\_<endmenu\\_>" . font-lock-constant-face)
+    ("^\\_<if\\_>" . font-lock-constant-face)
+    ("^\\_<endif\\_>" . font-lock-constant-face)
+    ("^\\_<menuconfig\\_>" . font-lock-constant-face)
+    ("^\\_<source\\_>" . font-lock-keyword-face)
+    ("^\#.*" . font-lock-comment-face)
+    ("\".*\"$" . font-lock-string-face)
+    ))
+(define-derived-mode kconfig-mode text-mode
+  "kconfig"
+  (set (make-local-variable 'font-lock-defaults)
+       '(kconfig-mode-font-lock-keywords t)))
+(add-to-list 'auto-mode-alist '("Kconfig" . kconfig-mode))
+
+;; (when (equal window-system 'x)
+
+;; ;; config term
+;; (require 'term)
+
+;; (setq ansi-term-color-vector [unspecified "white" "red4" "green3" "yellow3" "slate blue" "magenta3" "cyan3" "white"])
+
+;; (ansi-term "/bin/bash" "local")
+;; (ansi-term "/bin/bash" "remote")
+
+;; (defun visit-ansi-term ()
+;;   "1 if current buffer is not *local* nor *remote*, switch to *local*
+;;    2 if current buffer is *local*, switch to *remote*
+;;    3 if current buffer is *remote*, switch to *local*"
+;;   (interactive)
+;;   (let ((name (buffer-name)))
+;;     (if (equal name "*local*")
+;; 	(switch-to-buffer "*remote*")
+;;       (switch-to-buffer "*local*"))))
+;; (global-set-key (kbd "<f5>") 'visit-ansi-term)
+
+;; (fset 'ansi-term-close-et
+;;    (lambda (&optional arg) "Keyboard macro." (interactive "p") (kmacro-exec-ring-item (quote ("" 0 "%d")) arg)))
+;; (global-set-key (kbd "<f6>") 'ansi-term-close-et)
+
+;; )  ;;when (equal window-system 'x)
+;; mode correlation setting stop ************************************************************************
+
+(when window-system
+
+(desktop-save-mode 1)  ;; open file last time edit
+(setq desktop-dirname "~/.emacs.d/")
+(add-to-list 'desktop-path "~/.emacs.d")
+
+(require 'session)
+(add-hook 'after-init-hook 'session-initialize)
+
+(defun maximized-from-net ()
+(interactive)
+(x-send-client-message
+   nil 0 nil "_NET_WM_STATE" 32
+   '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0))
+(x-send-client-message
+   nil 0 nil "_NET_WM_STATE" 32
+   '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+)
+(add-hook 'window-setup-hook 'maximized-from-net)
+
+(defun toggle-fullscreen (&optional f)
+  (interactive)
+  (let ((current-value (frame-parameter nil 'fullscreen)))
+    (set-frame-parameter nil 'fullscreen
+			 (if (equal 'fullboth current-value)
+			     (if (boundp 'old-fullscreen) old-fullscreen nil)
+			   (progn (setq old-fullscreen current-value)
+				  'fullboth)))))
+;; (add-hook 'window-setup-hook 'toggle-fullscreen)
+(defun fullscreen ()
+  (interactive)
+  (x-send-client-message nil 0 nil "_NET_WM_STATE" 32
+			 '(2 "_NET_WM_STATE_FULLSCREEN" 0)))
+;; (require 'maxframe)
+;; (add-hook 'window-setup-hook 'maximize-frame t)
+
+;; (add-hook 'window-setup-hook 'toggle-fullscreen)
+;; without the below sentence, emacs always show tow windows when start
+(add-hook 'after-init-hook 'delete-other-windows t)
+
+)  ;; end of when window-system
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "grey30" :foreground "gainsboro" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 143 :width normal :foundry "unknown" :family "DejaVu Sans Mono")))))
