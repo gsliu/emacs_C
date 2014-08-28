@@ -66,96 +66,21 @@
 (define-key ido-completion-map (kbd "<f12>") 'ido-next-match)
 (define-key ido-completion-map (kbd "<f11>") 'ido-prev-match))
 (add-hook 'ido-setup-hook 'yp-ido-mode-init)
-;;--------------------------CEDET-----------------------------------------
-;;Load CEDET.
-;; See cedet/common/cedet.info for configuration details.
-(load-file "~/.emacs.d/cedet-1.1/common/cedet.el")
 
 
-;; Enable EDE (Project Management) features
-(global-ede-mode 1)
-
-;; Enable EDE for a pre-existing C++ project
-;; (ede-cpp-root-project "NAME" :file "~/myproject/Makefile")
-
-
-;; Enabling Semantic (code-parsing, smart completion) features
-;; Select one of the following:
-
-;; * This enables the database and idle reparse engines
-(semantic-load-enable-minimum-features)
-
-;; * This enables some tools useful for coding, such as summary mode
-;;   imenu support, and the semantic navigator
-;;(semantic-load-enable-code-helpers)
-
-;; * This enables even more coding tools such as intellisense mode
-;;   decoration mode, and stickyfunc mode (plus regular code helpers)
-;; (semantic-load-enable-gaudy-code-helpers)
-
-;; * This enables the use of Exuberent ctags if you have it installed.
-;;   If you use C++ templates or boost, you should NOT enable it.
-;; (semantic-load-enable-all-exuberent-ctags-support)
-;;   Or, use one of these two types of support.
-;;   Add support for new languges only via ctags.
-;; (semantic-load-enable-primary-exuberent-ctags-support)
-;;   Add support for using ctags as a backup parser.
-;; (semantic-load-enable-secondary-exuberent-ctags-support)
-
-;; Enable SRecode (Template management) minor-mode.
-;; (global-srecode-minor-mode 1)
-;;--------------------------END CEDET-----------------------------------------
-
-;;--------------------------global-----------------------------------------
-(autoload 'gtags-mode "gtags" "" t)
-
-(add-hook 'c-mode-hook
-'(lambda ()
-(gtags-mode 1)))
-
-(add-hook 'c++-mode-hook
-'(lambda ()
-(gtags-mode 1)))
-
-(add-hook 'asm-mode-hook
-'(lambda ()
-(gtags-mode 1)))
-
-(setq auto-save-hook nil)
-(global-set-key "\C-c/" 'semantic-ia-fast-jump)
-(setq default-indent-tabs-mode nil)
-(setq default-tab-width 4)
-
-
-(gtags-mode 1) ;; 好像不在.emacs中使能gtags-mode下面的函数就找不到。
-(define-prefix-command 'yp-gtags-map) ;; 和下一句话合起来定义一个自己的快捷键头（C-xg）。
-(global-set-key "\C-xg" 'yp-gtags-map)
-(define-key gtags-mode-map "\C-xgv" 'gtags-visit-rootdir)  ;; 选择搜索的根目录。
-(define-key gtags-mode-map "\C-xgt" 'gtags-find-tag)  ;; 找函数定义
-;;(define-key gtags-mode-map "\M-." 'gtags-find-tag-from-here)  ;; 找函数定义
-(define-key gtags-mode-map "\C-xgo" 'gtags-find-tag-other-window)  ;; 打开一个新窗口找函数定义
-(define-key gtags-mode-map "\C-xgr" 'gtags-find-rtag)  ;; 找函数的调用
-(define-key gtags-mode-map "\C-xgs" 'gtags-find-symbol)  ;; 搜索符号，也就是变量的定义和调用
-(define-key gtags-mode-map "\C-xgp" 'gtags-find-pattern)  ;; 似乎和下面两个一样，都是在项目中进行字符串搜索，不知道有啥区别，不会使。
-(define-key gtags-mode-map "\C-xgg" 'gtags-find-with-grep)
-(define-key gtags-mode-map "\C-xgi" 'gtags-find-with-idutils)
-(define-key gtags-mode-map "\C-xgf" 'gtags-find-file)  ;; 在项目中搜索文件。
-(define-key gtags-mode-map "\C-xga" 'gtags-parse-file)  ;; 分析指定文件（基本就是找到所有能找到的定义），列在emacs中。
-(define-key gtags-mode-map "\C-xgb" 'yp-gtags-append)  ;; 更新项目的tag文件，该函数在后面定义。
-(defun yp-gtags-append ()
-(interactive)
-(if gtags-mode
-(progn
-(message "start to global -u")
-(start-process "gtags-name" "*gtags-var*" "global" "-u"))))
-;;--------------------------END global-----------------------------------------
+;;---------------------------ETAGS----------------------------------
+(setq tags-file-name "~/src/linux/TAGS")
+(global-set-key (kbd "C-1") 'tags-search)
+(global-set-key (kbd "C-2") 'tags-loop-continue)
+(global-set-key (kbd "C-3") 'tags-apropos)
+;;-----------------------------END ETAGS---------------------------
 
 ;;------------------------
 (setq ede-locate-setup-options
 '(ede-locate-global
 ede-locate-base))
 
-(semanticdb-enable-gnu-global-databases 'c-mode)
+;;(semanticdb-enable-gnu-global-databases 'c-mode)
 
 ;;---------------折叠花括号-----------
 (add-hook 'c-mode-common-hook   'hs-minor-mode)
@@ -307,13 +232,13 @@ ede-locate-base))
 
 ;;-----------------enable bookmark default
 
-(enable-visual-studio-bookmarks)
-(custom-set-variables
+;;(enable-visual-studio-bookmarks)
+;;(custom-set-variables
   ;; custom-set-variables was added by Custom.
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+;; )
 
 
 
