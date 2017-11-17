@@ -2,12 +2,14 @@
 
 ;; ----- ido-last-directory-list -----
 (
+ ("/Users/gsliu/" . ".emacs.d/")
  ("/home/" . "gliu/")
  ("/home/gliu/" . ".emacs.d/")
 )
 
 ;; ----- ido-work-directory-list -----
 (
+ "/Users/gsliu/.emacs.d/"
  "/home/gliu/.emacs.d/"
  "/home/gliu/src/linux/mm/"
 )
@@ -20,6 +22,12 @@
 
 ;; ----- ido-dir-file-cache -----
 (
+ ("/Users/gsliu/.emacs.d/" (23054 42694 0 0) "tutorial/" "site-lisp/" "ropemacs/" "rope/" "python-mode.el-6.0.5/" "pydb-1.26/" "init.el" "global-6.2.1/" "et" "elisp/" "cedet-1.1/" "auto-save-list/" ".ido.last" ".git/" "../" "./")
+
+ ("/Users/gsliu/" (23054 42694 0 0) "WebstormProjects/" "VirtualBox VMs/" "test.go" "test" "tcpdump" "src/" "sqltest/" "Public/" "ponzu/" "Pictures/" "myreplication/" "Music/" "Movies/" "log" "Library/" "INK-2045" "index.html.1" "index.html" "hackthon/" "FW_bootup.sh" "fragmenta-cms/" "emacsbk/" "dump.rdb" "Downloads/" "Documents/" "Desktop/" "data/" "c.cpp" "c" "binlog/" "b.out" "b.cpp" "Applications/" "a.out" "a.cpp~" "a.cpp" "a" ".wget-hsts" ".vscode/" ".vimrc" ".viminfo" ".vim/" ".Trash/" ".tooling/" ".ssh/" ".rediscli_history" ".p2/" ".oracle_jre_usage/" ".npm/" ".node_repl_history" ".mysql_history" ".local/" ".links/" ".lesshst" ".gitconfig" ".gem/" ".FW_bootup.log" ".emacs.d.bk/" ".emacs.d/" ".eclipse/" ".ecb-tip-of-day.el" ".DS_Store" ".dlv/" ".cups/" ".config/" ".CFUserTextEncoding" ".bundle/" ".bash_sessions/" ".bash_profile" ".bash_history" ".account" "-p/" "../" "./")
+
+ ("/Users/" (22508 55422 0 0) "Shared/" "gsliu/" "fwadmin/" ".localized" ".FW_bootup.log" "../" "./")
+
  ("/home/gliu/.emacs.d/" (21502 49974 486339 749000) "a.py" "ibus-el-0.3.2.tar.gz" "#.ido.last#" "et" "../" "session.10a3d130ee1c45789a139020544994725700000031950125" ".git/" ".ido.last" "elisp/" "#test#" "session.1096ab1071b5b284e5136374360828953500000031000034" "session.1069608d98e4ea3d5a136806330347069200000115090053" "pydb-1.26/" "global-6.2.1/" "init.el" "site-lisp/" "python-mode.el-6.0.5/" "cedet-1.1/" "./" "init.el.hank" "session.10a3d130ee1c45789a139045850963682000000031950133" "rope/" "tutorial/" "auto-save-list/" "ropemacs/")
 
  ("/home/gliu/src/linux/drivers/" (21502 38576 672832 26000) "video/" "parport/" "platform/" "mcb/" "md/" "memstick/" "sn/" "phy/" "sbus/" "extcon/" "../" "mfd/" "hsi/" "irqchip/" "Kconfig" "virtio/" "fmc/" "sfi/" "w1/" "lguest/" "watchdog/" "vfio/" "powercap/" "dca/" "pwm/" "mailbox/" "cdrom/" "clk/" "oprofile/" "atm/" "parisc/" "tc/" "pnp/" "dio/" "rtc/" "hid/" "gpio/" "base/" "scsi/" "hwspinlock/" "pps/" "mmc/" "message/" "pinctrl/" "thermal/" "ipack/" "bus/" "sh/" "mtd/" "Makefile" "hwmon/" "virt/" "edac/" "ide/" "bluetooth/" "clocksource/" "s390/" "macintosh/" "nfc/" "infiniband/" "soc/" "char/" "misc/" "ptp/" "accessibility/" "hv/" "vhost/" "idle/" "reset/" "spmi/" "connector/" "iio/" "isdn/" "acpi/" "remoteproc/" "ntb/" "of/" "pci/" "firewire/" "vme/" "iommu/" "zorro/" "uio/" "ps3/" "spi/" "ata/" "pcmcia/" "regulator/" "devfreq/" "crypto/" "eisa/" "target/" "thunderbolt/" "block/" "i2c/" "auxdisplay/" "power/" "cpuidle/" "media/" "firmware/" "net/" "amba/" "dma-buf/" "rpmsg/" "./" "staging/" "nubus/" "xen/" "bcma/" "cpufreq/" "rapidio/" "vlynq/" "ras/" "leds/" "usb/" "uwb/" "ssb/" "memory/" "dma/" "tty/" "gpu/" "input/")

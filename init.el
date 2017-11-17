@@ -1,3 +1,10 @@
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+
 (setq x-select-enable-clipboard t)      ; support copy and paste between emacs and X window
 (tool-bar-mode -1)                     ; disable tool bar, must be -1, nil will caust toggle
 (scroll-bar-mode -1)
@@ -207,28 +214,28 @@ ede-locate-base))
 (define-key global-map [(meta f10)]    'cscope-display-buffer-toggle)
 
 ;;---------------default max screen------------
-(global-set-key [f11] 'my-fullscreen)
+;;(global-set-key [f11] 'my-fullscreen)
 
 ;全屏
-(defun my-fullscreen ()
-  (interactive)
-  (x-send-client-message
-   nil 0 nil "_NET_WM_STATE" 32
-   '(2 "_NET_WM_STATE_FULLSCREEN" 0))
-)
+;;(defun my-fullscreen ()
+;;  (interactive)
+;;  (x-send-client-message
+;;   nil 0 nil "_NET_WM_STATE" 32
+;;   '(2 "_NET_WM_STATE_FULLSCREEN" 0))
+;;)
 
 ;最大化
-(defun my-maximized ()
-  (interactive)
-  (x-send-client-message
-   nil 0 nil "_NET_WM_STATE" 32
-   '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0))
-  (x-send-client-message
-   nil 0 nil "_NET_WM_STATE" 32
-   '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
-)
+;;(defun my-maximized ()
+;;  (interactive)
+;;  (x-send-client-message
+;;   nil 0 nil "_NET_WM_STATE" 32
+;;   '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0))
+;;  (x-send-client-message
+;;   nil 0 nil "_NET_WM_STATE" 32
+;;   '(2 "_NET_WM_STATE_MAXIMIZED_VERT" 0))
+;;)
 ;启动时最大化
-(my-maximized)
+;;(my-maximized)
 
 ;;-----------------enable bookmark default
 
@@ -241,6 +248,13 @@ ede-locate-base))
 ;; )
 
 
+(set-default-font "Monaco 18")
+
+;;-------------using command as meta----------------
+(setq mac-option-modifier 'super)
+(setq mac-command-modifier 'meta)
+
+(setq tramp-default-method "ssh")
 
 ;;;--------------other window---------------
 (global-set-key (kbd "C-<tab>") 'other-window)
